@@ -1,7 +1,7 @@
 #+TITLE: Exercise 2.1 Solution
 #+AUTHOR: Lucian Augusto
 
-* What is the problem with this version of the TicketMachine's constructor?
+* What is the problem with this version of the TicketMachine's constructor After identifying the issue, test this version on the /naive-ticket-machine/ project. Does this version compile? Create a project and then inspects its fields. Do you notice anything wrong about the /price/ field's value on this version's inspector tool? Can you explain why does this happen??
 
 #+BEGIN_SRC java
 public TicketMachine(int ticketCost) {
@@ -11,22 +11,19 @@ public TicketMachine(int ticketCost) {
 }
 #+END_SRC
 
-After identifying the issue, test this version on the /naive-ticket-machine/
-project. Does this version compile? Create a project and then inspects its
-fields. Do you notice anything wrong about the /price/ field's value on this
-version's inspector tool? Can you explain why does this happen?
-
 The constructor presented, has a variable named *price* declared inside its
 code block and this variable receives the value passed through the *ticketCost*
 parameter. For this reason, the class' own price field is not receiving any
 value. Therefore, when inspecting the object using the IDE's inspecting tool,
 its price field, instead of having the constructor's *ticketCost* value, has
-a value of $0$.
+a value of $0$. Figures [[fig:e21Const]] and [[fig:e21Inspector]] illustrate this.
 
 #+CAPTION: Calling TicketMachine's constructor with a value $99$ as a parameter
 #+NAME: e21Const
+#+LABEL: fig:e21Const
 [[./images/e21Const.png]]
 
 #+CAPTION: Inspecting the TicketMachine's instance. As we can see, the *field* parameter has a value of $0$
 #+NAME: e21Inspector
+#+LABEL: fig:e21Inspector
 [[./images/e21Inspector.png]]
