@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=LabClassExecutor
+comment0.text=\n\ This\ class\ contains\ the\ main\ method\ and\ only\ executes\ the\ tasks\ related\ to\ \n\ the\ exercise\ 1.3\ of\ the\ Assignment\ 01\n\n\ @author\ Lucian\ Augusto\n
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=lab\ numberOfEnrolledStudents
+comment2.target=void\ fillClassList(LabClass,\ int)
+comment2.text=\n\ Private\ method\ that\ creates\ a\ number\ of\ students\ and\ enrolls\ them\ in\ a\n\ a\ lab\ class\n
+numComments=3
