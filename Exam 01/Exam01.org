@@ -1,0 +1,600 @@
+#+TITLE: Técnicas de Programação - Primeira Avaliação
+#+AUTHOR: Lucian Augusto
+#+STARTUP: showeverything
+#+OPTIONS: date:nil toc:nil
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \usepackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+
+* Questão 1 – Qual é o resultado ao tentar compilar e executar o seguinte código?
+#+BEGIN_SRC java
+class Test {
+    public void methodA(int i) {
+        System.out.println(i);
+    }
+    public int methodA(int i) {
+        System.out.println(i+1);
+        return i+1;
+    }
+    public static void main(String args[]) {
+        Test X = new Test();
+        X.methodA(5);
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Imprime: 5
+b. Imprime: 6
+c. Erro em tempo de execução pois o método Test.methodA(int) não é encontrado.
+d. Erro de compilação pois methodA é definido duas vezes na classe Test.
+e. Nenhuma das demais respostas.
+
+** Resposta:
+Ao tentar compilar e rodar o código acima, o compilador irá retornar um erro, pois o método *methodA()* foi definido duas vezes na mesma classe utilizando parâmetros iguais (mesmo tipo e número). Neste caso, o compilador considera os dois metodos como iguais, o que não é permitido. Com isso ele retorna um erro ao tentar compilar e rodar o código acima. Portanto, *a resposta correta é a alternativa d.*
+
+* Questão 2 – Dado o código-fonte abaixo, qual é o resultado esperado?
+#+BEGIN_SRC java
+public class Test {
+    int a = 10;
+    public void doStuff(int a) {
+        a += 1;
+        System.out.println(a++);
+    }
+    public static void main(String args[]) {
+        Test t = new Test();
+        t.doStuff(3);
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. 11
+b. 12
+c. 4
+d. 5
+e. Nenhuma das demais respostas.
+
+** Resposta:
+No código acima, o valor impresso no console será 4, portanto *a resposta correta é a alternativa c.* Isto ocorre porque o método *doStuff()* recebe um parâmetro do tipo /int/ chamado *a* e, dentro do seu bloco, ele incrementa o valor de deste parâmetro *a* através da instrução *a += 1;*, ou seja, ele está utilizando apenas o valor passado através do parâmetro (/variável local/) *a*  e não está considerando a /variável de instância/ *a* presente na classe (esta variável de instância sequer é usada neste código). Portanto, como o parâmetro passado ao método *doStuff()* dentro do método *main()* é *3*, a instrução *a += 1;* irá incrementar o valor deste parâmetro em *1*, tornando-se então *4*. Em segiuda, é chamado a instrução para imprimir algo no console (*System.out.println();*). Nesta instrução, está sendo passado como parâmetro a instrução *a++*. Como o *++* após a /variável local/ *a* representa um *pós-incremento*, significa que a variável só terá seu valor incrementado *após à execução da instrução em questão*, isto é, *a* só será incrementado *após a execução do comando System.out.println();*. Com isso a saída do programa acima será *4*.
+
+* Questão 3  – Dado o código-fonte abaixo, qual é o resultado esperado?
+#+BEGIN_SRC java
+public class SomeClass {
+    private int value = 1;
+    public void printVal(int value) {
+        System.out.print(value);
+    }
+    public static void main(String args[]) {
+        int a = 2;
+        SomeClass c = new SomeClass();
+        c.printVal(a);
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Imprime: 1
+b. Imprime: 2
+c. Erro de compilação.
+d. Erro em tempo de execução.
+e. Nenhuma das demais respostas.
+
+** Resposta:
+Ao executar o código acima, será impresso no console o valor *2*, *portanto a resposta correta é a alternativa b.* Neste código, o método *printVal()* apenas recebe um parâmtro (/variável local/) do tipo /int/ chamada *value* e imprime o valor desta variável no console. Dentro do método *main()*, é inciada uma variável (/local/) do tipo /int/ que recebe o valor inteiro *2*. Em seguida, é criada uma instância da Classe *SomeClass* referenciada por *c*. Então o método *printVal()* é chamado com a /variável local/ *a* como parâmetro, portanto, o valor desta variável (*2*) é impresso no console.
+
+* Questão 4  – Dado o código-fonte abaixo, qual é o resultado esperado?
+#+BEGIN_SRC java
+public class Hotel {
+    private int roomNr;
+    public Hotel(int roomNr) {
+        this.roomNr = roomNr;
+    }
+    public int getRoomNr() {
+        return this.roomNr;
+    }
+    static Hotel doStuff(Hotel hotel) {
+        hotel = new Hotel(1);
+        return hotel;
+    }
+    public static void main(String args[]) {
+        Hotel h1 = new Hotel(100);
+        System.out.print(h1.getRoomNr() + " ");
+        Hotel h2 = doStuff(h1);
+        System.out.print(h1.getRoomNr() + " ");
+        System.out.print(h2.getRoomNr() + " ");
+        h1 = doStuff(h2);
+        System.out.print(h1.getRoomNr() + " ");
+        System.out.print(h2.getRoomNr() + " ");
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. 100 100 1 1 1
+b. 100 100 100 100 1
+c. 100 100 100 100 100
+d. 100 1 1 1 1
+e. 100 100 100 1 1
+
+** Resposta:
+Ao executar o código acima, será impresso no console os valores *100 100 1 1 1*, *portanto a resposta correta é a alternativa a.* Isto ocorre porque no método *main()* é instanciado um objeto do tipo *Hotel* chamado *h1* passando como parâmetro no construtor o valor (*inteiro*) *100* (este valor é então atribuído à /variável de instância/ *roomNr*) e logo em seguida, é impresso o valor presente no campo (/variável de instância/) *roomNr* de *h1* (*100*) é impresso (Note que para isso, é utilizado o método *getter* criado para acessar o valor da /variável de instância/ *roomNr*). Em seguida uma nova referência de um objeto do tipo *Hotel*, *h2* é criada e a ela é atribuído o valor retornado do método *doStuff()*. Este método *doStuff()*, recebe como parâmetro um objeto do tipo *Hotel* em seguida atrubi à referência interna ao método (que é uma cópia da referência externa ao método) deste objeto passado uma nova instância de *Hotel* gerada através do construtor passando *1* como parâmetro, logo esta nova instância de hotel tera o valor *1* atribuído ao campo *roomNr*. O *doStuff()* então retorna a instância recém criada. Portanto a referência *h2* irá apontar para a instância de *Hotel* criada dentro do método *doStuff()*. Após isso, é impresso o valor do campo *roomNr* de *h1* novamente, que continuará como *100*, e então também será impresso o valor do campo *roomNr* de *h2*, que é *1*. *Neste ponto já podemos concluir que a resposta correta é a alternativa a*. Continuando, em seguida atribuímos à referência *h1* o retorno do método *doStuff()*, que será uma *nova instância de Hotel* cujo campo *roomNr* será *1*. Finalmente, é impresso os campos *roomNr* de *h1* e *h2*, cujo valor será *1* para ambos.
+
+* Questão 5  – Dado o código-fonte abaixo, qual é o resultado esperado?
+#+BEGIN_SRC java
+public class Teste
+{
+    public static void main(String args[]) {
+        String str = null;
+        if (str.length() == 0) {
+            System.out.print("1");
+        } else if (str == null) {
+            System.out.print("2");
+        } else {
+            System.out.print("3");
+        }
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Imprime: 2
+b. Imprime: 3
+c. Erro em tempo de execução.
+d. Erro de compilação.
+e. Imprime: 1
+
+** Resposta:
+Compilar e tentar executar co código acima resultará em um /NullPointerException/, uma exceção lançada em tempo de execução, *portanto a respostacorreta é a aternativa c.* Esta exceção ocorre porque no método *main()* estamos declarando o objeto do tipo /String/ *str* como /null/, ou seja um objeto nulo. Ao tentar chamar o método *length()* (classe *String*) para o objeto nulo *str* na instrução *str.length() == 0* será lançada a exceção /NullPointerException/ pois não é possível acessar as propriedades (comprimento da String neste caso) de um objeto nulo.
+
+* Questão 6  – Qual é o resultado da tentativa de compilação e execução do seguinte código?
+#+BEGIN_SRC java
+public class Test
+{
+    public void method()
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            System.out.print(i);
+        }
+        System.out.print(i);
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. 0122
+b. 0123
+c. Erro de compilação.
+d. 0133
+e. Nenhuma das demais respostas.
+
+** Resposta:
+Ao compilar e executar o código acima, receberemos uma mensagem de erro de compilação informando que um símbolo (a variável *i* neste caso) não pode ser encontrada. Isso acontece porque temos uma instrução para imprimir algo no console (*System.ou.println()*) que recebe a variável *i fora do bloco onde esta variável foi declarada*, resultando no erro de compilação (devemos lembrar que ao declarar uma variável para controlar um laço /for/, como a variável *i* foi declarada no laço *for(int i = 0; i < 3; i++)*, ela só poderá ser acessada dentro do bloco do seu laço). *Portanto, a resposta correta é a alternativa c.*
+
+* Questão 7  – Qual é o resultado da compilação e execução do seguinte trecho de código?
+#+BEGIN_SRC java
+String s1 = new String("Test");
+String s2 = new String("Test");
+if (s1==s2)
+System.out.print("Same ");
+if (s1.equals(s2))
+System.out.println("Equals");
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Equals
+b. Same
+c. Erro de compilação.
+d. O código compila, mas nada é impresso.
+e. Same Equals
+
+** Resposta:
+A compilação e execução do bloco código acima (dentro de uma classe e um método *main()*) resulta na palavra *Equals* ser impressa no console, *portanto, a resposta correta é a alternativa a.* Isso ocorre porque são criados dois objetos do tipo *String* que, *mesmo possuindo o mesmo texto, são distintas*, portanto, a instrução *s1==s2* presente no primeiro condicional (/if/) retorna *false*, pois as referências *s1* e *s2* não apontam para o mesmo objeto, fazendo com que a instrução *System.out.print("Same ");* *não seja executada*. Em seguida, temos um outro condicional que tem como condição a instrução *s1.equals(s2)*. O método *equals() compara o conteúdo dos objetos para dizer se eles são iguais*, ou seja não precisa ser necessariamente o mesmo objeto. Com isso a instrução *s1.equals(s2)* retorna *true*, fazendo com que a  instrução *System.out.println("Equals");* seja executada, imprimindo assim a String *Equals* no console.
+
+* Questão 8  – O que há de errado com o seguinte código (se é que há)?
+#+BEGIN_SRC java
+void test(int x) {
+    switch (x) {
+        case 1:
+        case 2:
+        case 0:
+        default:
+        case 4:
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. O rótulo default deve ser o último na expressão switch.
+b. Não há nada de errado no código.
+c. O rótulo case 0 deve preceder o rótulo case 1.
+d. Cada seção case deve terminar com um comando break.
+e. A variável x não tem o tipo correto para uma expressão switch.
+
+** Resposta:
+Ao executar o bloco de código acima  (dentro de uma classe e um método *main()* por exemplo), nenhum erro de compilação ou exceção serão lançados, mas como nenhum dos *case* possuem um instrução *break;*, ao cair em um dos casos da estrutura *switch-case* não apenas o bloco do *case* em questão será executado, mas todos os outros blocos dos *cases* seguintes *também serão executados* (por exemplo, se *x* for igual a *2*, os *cases 2, 0, default, e 4* serão executados). Mesmo este tipo de comportamento *pode ser utilizados em algumas situaões muito específicas*, portanto, *não é necessariamente errado*. O rótulo *default não precisa necessariamente ser o último*,  assim como o rótulo *0* não precisa vir necessariamente antes do 1*. A variável *x* está sendo usada corretamente na estrutura também. Com isso, o código não apresenta *nenhum problema necessariamente* (claro que dependendo da aplicação, o estrutura *switch-case* utilizada *pode* causar problemas, não temos um contexto expecífico), portanto *acredito que a alternativa b é a alternativa correta.*
+
+* Questão 9  – Qual será a saída ao tentar compilar e executar o seguinte código?
+#+BEGIN_SRC java
+class MyClass {
+    public static void main(String[] args) {
+        for (int i = 0; i<10; i++) {
+            switch(i) {
+                case 0: System.out.println(i);
+            }
+            if (i) {
+                System.out.println(i);
+            }
+        }
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. O código irá compilar sem erros e irá imprimir o número 0, quando executado.
+b. O código irá compilar sem erros e irá imprimir o número 0 duas vezes, quando executar.
+c. O código não será compilado por causa de uma expressão condicional ilegal no if.
+d. O código irá compilar sem erro e imprimir os números de 0 a 10, quando executado.
+e. O código não será compilado por causa de uma expressão switch ilegal na instrução
+switch.
+
+** Resposta:
+Ao tentar compilar e exacutar o código acima, receberemos uma mensagem de erro. No caso, no condicional /if/ estamos utilizando a variável *i* como condição, mas esta variável é do tipo *int*, que não pode ser convertida ou resolvida em uma variável do tipo *boolean*. Como a condição do /if/ precisa obrigatoriamente ser resolvida em um *boolean* (ao contrário da linguagem /C/, em que podemos utilizar valores inteiros), o código escrito da maneira que está não será compilado justamente por estar uma variável que não se resolve em um *boolean*, portanto *a resposta correta é a alternativa c.*
+
+* Questão 10  – Qual será o resultado da compilação e execução do seguinte código?
+#+BEGIN_SRC java
+public class Passing {
+    public static void main(String[] args) {
+        int a = 0;
+        int b = 0;
+        int[] bArr = new int[1];
+        bArr[0] = b;
+        inc1(a);
+        inc2(bArr);
+        System.out.println("a=" + a + " b=" + b + " bArr[0]=" + bArr[0]);
+    }
+    public static void inc1(int x) {
+        x++;
+    }
+    public static void inc2(int[] x) {
+        x[0]++;
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. O código irá compilar e irá imprimir "a = 0 b = 0 bArr[0] = 0", quando for executado.
+b. O código irá compilar e irá imprimir "a = 0 b = 1 bArr[0] = 1", quando for executado.
+c. O código irá compilar e irá imprimir "a = 1 b = 1 bArr[0] = 1", quando for executado.
+d. O código irá compilar e irá imprimir "a = 0 b = 0 bArr[0] = 1", quando for executado.
+e. O código não será compilado, uma vez que x[0]++; não é uma declaração legal.
+
+** Resposta:
+Ao compilar e rodar o código acima, será impresso no console a String *a = 0 b = 0 bArr[0] = 1*, portanto, *a resposta correta é a alternativa d.* Isso ocorre porque o método *inc1()* recebe como parâmetro uma única variável do *tipo primitivo int*, e na linguagem Java, quando valores de tipos primitivos são passados como parâmetro, é criado uma cópia desta variável para ser utilizada dentro do método, com isso, o incremento *x++;* que ocorre dentro deste método afeta *apenas a cópia do valor passado como parâmetro e não o seu valor original, a variável a passada como parâmetro para inc1() no método main()*, assim, a *variável a permanecerá com seu valor inalterado*, resultando no valor *0* sendo impresso para a variável *a*. Já o método *inc2()* recebe como parâmetro, um *array de elementos do tipo int*. Na linguagem Java, *arrays são objetos*, e em Java métodos que recebem objetos como parâmetro na verdade estão recebendo uma referência (semelhante a um /ponteiro/ em /C/), portanto, a cópia criada dentro do método é uma cópia apenas da referência que aponta para o *mesmo objeto que a referência original aponta*, assim qualquer alteração realizada no objeto utilizando uma das referências alterará o objeto em si e todas as alterações se refletirão nas demais referências, ou seja, alterar o objeto através da cópia da referência dentro do método *inc2()* irá alterar o objeto e, ao acessar este mesmo objeto fora do método (utilizando a referência original) vamos o objeto após as modificações realizadas dentro do método *inc2()*, no caso, um incremento no valor do seu elemento presente na posição *0* (instrução *x[0]++;*). Portanto, ao acessar o valor de *bArr[0]* no comando que imprime a string no console, vamos acessar o objeto após o seu incremento, ou seja o valor avaliado será *1*, resultando na saída *a = 0 b = 0 bArr[0] = 1*.
+
+* Questão 11  – Qual será o resultado da compilação e execução do seguinte programa?
+#+BEGIN_SRC java
+class MyClass {
+    public static void main(String[] args) {
+        int size = 20;
+        int[] arr = new int[ size ];
+        for (int i = 0; i < size; ++i)
+{ System.out.println(arr[i]);
+        }
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. O programa irá compilar e executar sem erro, e irá imprimir 0 vinte vezes.
+b. O programa irá compilar e executar sem erro, e imprimirá os números de 0 a 19.
+c. O programa irá compilar e executar sem erro, e irá imprimir nulo vinte vezes.
+d. O programa irá compilar, mas lançará um ArrayIndexOutOfBoundsException quando executado.
+e. O código não irá compilar, porque o tipo de matriz int [] está incorreta.
+
+** Resposta:
+Compilar e executar o código acima resultará no programa imprimindo no número *0 20 vezes* no console, portanto *a resposta correta é a alternativa a.* Isto ocorre porque nós iniciamos o *array de elementos do tipo int, arr,* com *20* posições, entretanto como nenhum elemento é adicionado ou alterado, todos os elementos deste array possuem o *valor padrão de inicialização* (que é *0*). O laço /for/ irá iterar por *20 elementos* (de *0 até 19*) e irá imprimir o elemento na presente na respectiva posição do array *arr*, e como todos os seus elementos possuem o valor *0*, o programa imprimirá o valor *0* *20* vezes na tela.
+
+* Questão 12  – Qual é a saída esperada do seguinte programa?
+#+BEGIN_SRC java
+1. public class WaterBottle {
+2. private String brand;
+3. private boolean empty;
+4.
+5. public static void main(String [] args ) {
+6. WaterBottle wb = new WaterBottle();
+7. if(!wb.empty) {
+8. System.out.println("Brand = " + wb.brand);
+9. }
+10.}
+11.}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Nenhuma das anteriores.
+b. Linha 7 gera erro de compilação.
+c. Linha 6 gera erro de compilação.
+d. Brand = null
+e. Linha 8 gera erro de compilação.
+
+** Resposta:
+Ao compilar e executar o programa acima, ele irá imprimir no console a String *Brand = null*, portanto *a resposta correta é a alternativa d.* Isto ocorre porque, ao instanciar um objeto da classe *WaterBottle* (chamado neste caso de *wb*) utilizando o *construtor default* (construtor padrão de qualquer classe Java que instancia um objeto desta classe), seus campos (/variáveis de instância/) são inicializados utilizando valores padrões (*null para objetos, 0 para ints e false para booleans por exemplo*), portanto os campos *brand* e *empty* serão inicializados com os valores *null* e *false* respectivamente. Na linha 7 do código acima, a condição do condicional /if/ é a expressão *!wb.empty* que vai acessar o campo *empty* do objeto *wb* que possui o valor *false* e então nega este valor através do operador *!*, portanto a condição resultará em *true*, fazendo com que a instrução dentro do bloco do /if/ seja executada (vale observar que, mesmo os campos *brand* e *empty* sendo declarados com o *modificador de acesso private*, que restringe o acesso a estes campos apenas à classe, o método *main()* *está dentro da classe WaterBottle*, portanto *os campos podem ser acessados sem problemas*). A instrução que imprime a String no console acessa o campo *brand* do objeto *wb*, que possui valor *null*, resultando na String *Brand = null*.
+
+* Questão 13  – Dada a seguinte declaração de enumeração:
+#+BEGIN_SRC java
+1. public enum Fruit {
+2. APPLE("red"),
+3. BANANA("yellow"),
+4. ORANGE("orange"),
+5. PLUM("purple");
+6.
+7. private Fruit(String color) {
+8. this.color = color;
+9. }
+10.
+11. public String color;
+12. }
+#+END_SRC
+
+Qual é o resultado do seguinte programa?
+
+#+BEGIN_SRC java
+15. public class FruitStore {
+16. public static void main(String [] args) {
+17. Fruit one = Fruit.PLUM;
+18. System.out.println("a " + one.name() + " is " + one.color);
+19. }
+20. }
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. a Fruit.PLUM is purple
+b. A enumeração Fruit não compila.
+c. a PLUM is purple
+d. Erro de compilação na linha 17.
+e. Erro de compilação na linha 18.
+
+** Resposta:
+Ao tentar compilar e executar o programa acima, da maneira que foi dado (como se ambos os blocos estivessem no mesmo arquivo e com a classe *FruitStore* dentro da *enum Fruit*) resultaria em um erro de compilação porque *ambas as classes são públicas*, e em *um único arquivo java só pode ter uma classe publica*. Portanto, *a resposta correta é a alternativa b.*
+
+* Questão 14  – Qual é a saída do seguinte programa?
+#+BEGIN_SRC java
+1. public class Vowels {
+2. public static int countVowels(String input) {
+3. int count = 0;
+4. int length = input.length();
+5. int i = 0;
+6.
+7. String lowercase = input.toLowerCase();
+8. while(i < length) {
+9. switch(lowercase.charAt(i)) {
+10. case 'a':
+11. case 'e':
+12. case 'i':
+13. case 'o':
+14. case 'u':
+15. count++;
+16. }
+17. i++;
+18. }
+19. return count;
+20. }
+21.
+22. public static void main(String [] args) {
+23. int x = countVowels("Supercalifragilisticexpialidocious");
+24. System.out.print(x);
+25. }
+26. }
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. 16
+b. 35
+c. O código não compila.
+d. 34
+e. 0
+
+** Resposta:
+Ao compilar e rodar o código acima resultará no número 16 sendo impresso no console, portanto *a resposta correta é a alternativa a.* Isso ocorre porque, dentro do método *main()*, o método *countVowels()* é chamado passando a String *Supercalifragilisticexpialidocious* como parâmetro e o valor inteiro retornado por esté método é armazenado na variável (do tipo *int*) *x* e então o valor armazenado em *x* é impresso. O método *countVowels()* recebe um objeto do tipo *String como parâmetro*, e inicia 3 variáveis do tipo *int* chamadas de *count*, *length* e *i* com os valores *0*, *input.lenght()* (que nada mais do que retorna o comprimento da String passada como parâmetro) e *0*. Em seguida, a String do parâmetro é convertida para ser composta apenas por letras minúsculas (utilizando o método *toLowerCase()*) e armazenada em *lowercase*. Então, um laço /while/ varre todas as letras da string lowercase (utilizando *i* para fazer o controle dos índices das posições acessadas e também o controle do laço) e, se a letra presente na posição *i* da String *lowercase* for uma vogal (condição verificada através do uso da estrutura *switch-case* iniciada na linha *9*, que possui todas as vogais minúsculas como cases que sempre rodam o mesmo bloco de instruções, *count++* neste caso), a variável *count* é incrementada. Finalmente, o valor de *count* é retornado após o programa sair do laço /while/. Com isso, como a String *Supercalifragilisticexpialidocious* possui 16 vogais, o valor *16 é impresso no console*.
+
+* Questão 15  – Qual é o resultado do seguinte código?
+#+BEGIN_SRC java
+1. public class Fruit {
+2. private String color = "Green";
+3.
+4. public static void main(String [] args) {
+5. Fruit apple = new Fruit();
+6. apple.color = "Red";
+7. System.out.println(apple.color);
+8. }
+9. }
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Erro de compilação nas linas 6 e 7
+b. Erro de compilação na linha 5
+c. Red
+d. Linha 6 lança uma exceção em tempo de execução
+e. Green
+
+** Resposta:
+Ao compilar e rodar o código acima será impresso no console a String *Red*, portanto *a resposta correta é a aternativa c.* Isso ocorre porque no método *main()*, é criado uma *instância da classe Fruit* chamada *apple* (cujo campo *color* é inciado por padrão com o valor *Green*). Em seguida, o *objeto apple* têm o valor do seu campo *color* alteraddo para *Red* e então este valor é impresso no console. Isto tudo é feito através de acesso direto ao campo *color* que, mesmo sendo declarado com o *modificador de acesso private*, que restringe o acesso a este campo apena à classe, o método *main()* *está dentro da classe Fruit*, portanto *o campo pode ser acessado sem problemas*.
+
+* Questão 16  – Qual é o resultado das seguintes instruções?
+#+BEGIN_SRC java
+3. Map <Integer,Integer> map = new HashMap <Integer,Integer>(10);
+4. for(int i = 1; i <= 10; i++) {
+5. map.put(i, i * i);
+6. }
+7. System.out.println(map.get(4));
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Erro de compilação na linha 7
+b. 25
+c. Erro de compilação na linha 5
+d. 16
+e. Erro de compilação na linha 3
+
+** Resposta:
+Ao executar as instruções acima dentro de um programa Java e, considerando que todas classes foram devidamentes importadas, temos que o valor *16 será impresso no console*, portanto *a resposta correta será a alternativa d.* Isto ocorre porque na linha 3 está sendo instanciado um ojeto do tipo *Map* chamado *map* que possui *10 elementos*. Em seguida, temos um laço /for/ que possui a variável *i* como variável de controle que vai fazer o preenchimento dos elementos do objeto *map*. *Map* (e seus derivados) são coleções de objetos que armazenam seus elementos utilizando um sistema de *chave e valor*, onde a *chave identifica o elemento dentro da coleção* e *valor, como o próprio nome diz, armazena o seu valor*. No código acima, *map* armazena valores utilizando um *objeto do tipo Integer como chave e outro objeto do tipo integer como valor* (os tipos são específicados dentro dos símbolos *<>*). *map* é preenchido seguindo o padrão *chave = i* e *valor = i * i* (instrução  *map.put(i, i * i);* presente dentro do laço /for/). Finalmente é impresso no console o valor cuja chave possui o valor *4* presente na coleção, que no caso é *4 * 4* que é igual a *16*.
+É importante lembrar que aso as classes *Map* e *HashMap* não tenham sido importadas (via comando *import* no início da classe), *irá resultar em dois erros de compilação na linha 3* por conta destas classes não terem sido importadas (*neste caso em específico, a resposta correta seria a alternativa e.*).
+
+* Questão 17  – Qual das seguintes afirmações sobre objetos é verdadeira?
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Um objeto é uma especificação para criar realizações concretas de abstrações.
+b. Um objeto é uma referência.
+c. Um objeto é uma variável.
+d. Uma classe é aquilo que é instanciado a partir de objetos.
+e. Um objeto é uma instância de uma classe.
+
+** Resposta:
+Analisando as alternativas uma a uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Errada, pois um objeto não é uma especificação e sim algo concreto na memória criado a partir de uma especificação (/Classe/);
+b. Errada. Referência apontam para objetos criados e/ou existentes. Objetos *não são* referências;
+c. Errada. Objetos são diferentes de variáveis. Objetos possuem campos (que definem seu estado) e comportamento (métodos) e são instanciados a partir de classes, enquanto variáveis apenas armazenam um valor respeitando seu tipo e não possuem campos e nem comportamento próprio (métodods).
+d. Errada. Objetos são instanciados a partir de classes, não o contrário;
+e. Correta. Um objeto é criado (instanciado) a partir de uma classe. Clases são especificações de objetos.
+
+Portanto, *a resposta correta é a alternativa e.*
+
+* Questão 18  – Que comando do JDK deveria ser utilizado para executar o método main( ) de uma classe denominada SmallProg?
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. java SmallProg.java
+b. javac SmallProg
+c. java SmallProg
+d. java SmallProg.class
+e. java SmallProg.main( )
+
+** Resposta:
+O comando utilizado para executar o método *main()* de uma classe chamada SmallProg será *java SmallProg*, portanto *a resposta correta é a alternativa c.* Entretanto para que isto funcione corretamente é necessário que exista um arquivo chamado *SmallProg.class* que *é gerado após compilar a classe SmallProg.java utilizando o comando javac*. Note que não é necessário especificar o .class do arquivo a ser executado pois o comando já assume que o arquivo já possui esta extensão.
+
+* Questão 19  – Qual o resultado do trecho de código abaixo?
+#+BEGIN_SRC java
+1. public class Classe {
+2.
+3. private int x = 0, y = 0;
+4.
+5. public static void main(String[] args) {
+6. Classe t = new Classe();
+7.
+8. t.x = 5;
+9. t.y = 10;
+10.
+11. t.aMethod(t.x, t.x);
+12.
+13. System.out.println(t.x);
+14.
+15. }
+16.
+17. private void aMethod(int a, int b){
+18. if (a > b){
+19. a = b;
+20. }else{
+21. a = a * 3;
+22. }
+23. }
+24. }
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. 15
+b. 10
+c. Erro de compilação na linha 12
+d. Erro de compilação na linha 3
+e. 5
+
+** Resposta:
+Ao compilar e executar o código acima o resultado será o valor *5* sendo impresso no console, portanto *a resposta correta é a alternativa e.* Isto ocorre porqueo método *aMethod()* recebe como parâmetro duas variáveis do tipo *int* e, *quando um método recebe variáveis de tipos primitivos como parâmetro, é criado uma cópia destas variáveis para serem utilizadas dentro do método*. Portanto *todas as alterações que ocorrerem nestas variáveis ficarão restritas ao interior do método* (a não ser que o valor alterado seja retornado pelo método). Assim, mesmo passando as /variáveis de instância/ *x* e *y* do objeto *t*, como elas são do tipo primitivo o métodod *aMethod()* criará uma cópia delas e fará as alterações apenas nas cópias, fazendo com que os campos do objeto permaneçam iguais, ou seja o *estado do objeto t não será alterado* (se o parâmetro recebido pelo método fosse um objeto da classe Classe, as alterações ocorreriam no objeto). Vale observar que, mesmo os campos *x* e *y* sendo declarados com o *modificador de acesso private*, que restringe o acesso a estes campos apenas à classe, o método *main()* *está dentro da classe Classe*, portanto *os campos podem ser acessados sem problemas, assim como o método privado aMethod()*.
+
+* Questão 20  – Qual será o resultado da execução do código abaixo?
+#+BEGIN_SRC java
+1. public class Classe {
+2.
+3. final private static String aWord = "S t r i n g";
+4.
+5. public static void main(String[] args) {
+6. for (int i = 0; i < aWord.length(); i++) {
+7. System.out.print(aWord.charAt(i));
+8. i++;
+9. }
+10. }
+11. }
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Não haverá saída, uma vez que a variável foi declarada com o modificador "static"
+b. Apenas os espaços em branco serão impressos
+c. S t r i n g
+d. Uma exceção do tipo IndexOutOfBounds na linha 7, uma vez que o contador é incrementado duas vezes por iteração
+e. String
+
+** Resposta:
+Ao compilar e executar o código abaixo, o resultado será a String *String* sendo impressa no console, portanto *a resposta correta é a alternativa e.* Isto ocorre porque temos uma /variável estática e final/ chamada *aWord* cujo conteúdo é *S t r i n g*. Dentro do método *main()* temos um laço /for/ com variável de controle *i* que passa por todas as posições de cada caractere da String *aWord* e imprime o caractere de cada posição *i*. O diferencial deste caso é que além do incremento padrão do laço /for/, temos um incremento extra dentro do laço *i++;* que faz com que *i* efetivamente seja incrementado de *2 em 2* e não de *1 em 1*, com isso, *apenas os elementos de índice par serão impressos*, resultando no valor *String* sendo impresso no console.
+
+* Gabarito
+#+ATTR_LATEX: :align |l|p{10cm}|
+|-----------+------------------------------|
+| *Questão* | *Resposta*                   |
+|-----------+------------------------------|
+|         1 | d.                           |
+|-----------+------------------------------|
+|         2 | c.                           |
+|-----------+------------------------------|
+|         3 | b.                           |
+|-----------+------------------------------|
+|         4 | a.                           |
+|-----------+------------------------------|
+|         5 | c.                           |
+|-----------+------------------------------|
+|         6 | c.                           |
+|-----------+------------------------------|
+|         7 | a.                           |
+|-----------+------------------------------|
+|         8 | b.                           |
+|-----------+------------------------------|
+|         9 | c.                           |
+|-----------+------------------------------|
+|        10 | d.                           |
+|-----------+------------------------------|
+|        11 | a.                           |
+|-----------+------------------------------|
+|        12 | d.                           |
+|-----------+------------------------------|
+|        13 | b.                           |
+|-----------+------------------------------|
+|        14 | a.                           |
+|-----------+------------------------------|
+|        15 | c.                           |
+|-----------+------------------------------|
+|        16 | d. ou e. (ver justificativa) |
+|-----------+------------------------------|
+|        17 | e.                           |
+|-----------+------------------------------|
+|        18 | c.                           |
+|-----------+------------------------------|
+|        19 | e.                           |
+|-----------+------------------------------|
+|        20 | e.                           |
+|-----------+------------------------------|
