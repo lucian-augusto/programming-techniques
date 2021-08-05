@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=CalcEngineTest
+comment0.text=\n\ The\ test\ class\ CalcEngineTest.\n\n\ @author\ \ Lucian\ Augusto\n\ @version\ 1.0\n
+comment1.params=
+comment1.target=void\ testPlus()
+comment1.text=\n\ Test\ the\ plus\ operation\ of\ the\ engine.\n\ validating\ the\ result\ of\ 3+4.\n
+comment2.params=
+comment2.target=void\ testMinus()
+comment2.text=\n\ Test\ the\ minus\ operation\ of\ the\ engine.\n\ validates\ the\ result\ of\ 9\ -\ 4.\n
+numComments=3
