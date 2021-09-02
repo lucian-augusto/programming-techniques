@@ -1,0 +1,683 @@
+#+TITLE: Técnicas de Programação - Primeira Avaliação
+#+AUTHOR: Lucian Augusto
+#+STARTUP: showeverything
+#+OPTIONS: date:nill toc:nil
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \usepackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+
+* Questão 1 – Considere a hierarquia de classes abaixo:
+#+BEGIN_SRC java
+-------------------------------------------------------------------
+class FourWheeler implements DrivingUtilities
+class Car extends FourWheeler
+class Truck extends FourWheeler
+class Bus extends FourWheeler
+class Crane extends FourWheeler
+--------------------------------------------------------------------
+#+END_SRC
+
+Considere o código abaixo, com linhas indicadas por números seguidos de ponto:
+#+BEGIN_SRC java
+1. DrivingUtilities du;
+2. FourWheeler fw;
+3. Truck myTruck = new Truck();
+4. du = (DrivingUtilities)myTruck;
+5. fw = new Crane();
+6. fw = du;
+#+END_SRC
+
+Qual das afirmações é _verdadeira_?
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. O código compilará se for adicionada uma conversão explícita na linha 6, mas lançará uma exceção em tempo de execução.
+b. A linha 4 não compilará porque uma interface não pode se referir a um objeto.
+c. O código não compilará sem uma conversão explícita na linha 6, porque descer na hierarquia sem conversão não é permitido.
+d. O código na linha 4 compilará mesmo sem a conversão explícita.
+e. O código compilará e poderá ser executado.
+
+** Resposta:
+Ao tentar compilar e rodar o código apresentado acima, considerando que o conteúdo do segundo bloco de texto (que contém as instruções numeradas) está dentro de uma classe e um método válido, *resultará em um erro de compilação de incompatibilidade de tipos na linha 6*. Portanto, *a resposta correta é a alternativa c.* Este erro ocorre porque na linha 6 temos uma referência do tipo FourWheeler recebendo um objeto referenciado por uma referência do tipo DrivingUtilities. Como neste caso temos uma classe mais especializada recebendo uma menos especializada (subclasse recebendo superclasse), temos o erro.
+
+* Questão 2 – O que será impresso na saída padrão quando o seguinte programa for executado e o botão Test for pressionado 3 vezes?
+#+BEGIN_SRC java
+import java.awt.*;
+import java.awt.event.*;
+public class ActionTest extends Frame
+{
+    public ActionTest()
+    {
+        Button test=new Button("Test");
+        add(test);
+        test.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    System.out.println("Clicked");
+                    Button b=(Button)e.getSource();
+                    b.addActionListener(new ActionListener()
+                        {
+                            public void actionPerformed(ActionEvent e)
+                            {
+                                System.out.println("Clicked again");
+                            }
+                        });
+                }
+            });
+        setSize(100,100);
+        setVisible(true);
+        setTitle("My Frame");
+    }
+    public static void main(String args[])
+    {
+        new ActionTest();
+    }
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Clicked Clicked Clicked again Clicked Clicked again Clicked again
+b. Clicked Clicked Clicked
+c. Clicked Clicked Clicked again Clicked Clicked again Clicked
+d. Clicked Clicked again
+e. Nenhuma das demais respostas.
+
+** Resposta:
+Ao executar o código acima e pressionar 3 vezes o botão Test será *impresso no console a seguinte sequência de Strings: "Clicked", "Clicked", "Clicked again", "Clicked", "Clicked again" e "Clicked again"*. Portanto, *a resposta correta é a alternativa a.* Isto ocorre porque *o construtor da classe ActionTest instancia um objeto do tipo Button chamado test e adiciona a este objeto uma ação caso o botão seja pressionado. Esta ação imprime a String "Clicked" no console e adiciona uma nova ação ao botão original (através do método getSource() que retorna o objeto que inicia ação sendo executada) que imprime no console a String "Clicked again"*. Portanto ao rodar o programa, *o método main() instancia um objeto do tipo ActionTest através do construtor definido acima. Com isso é aberto na tela um botão. Ao pressionar este botão ele executa ação descrita acima, ou seja, imprime a String "Clicked" no console e adiciona a segunda ação ao botão. Portanto, ao pressionar o botão pela segunda vez, ele terá duas ações associadas, imprimir "Clicked" no console e adicionar uma nova ação no botão (ambas fazem parte da primeira ação) e imprimir a String "Clicked again" na tela. Assim acionando o botão pela segunda vez, irá resultar nas Strings "Clicked" e "Clicked again" sendo impressas na tela e adicionando uma terceira ação ao botão original (Para imprimir "Clicked again" novamente).* Com isso, se *pressionarmos o botão uma terceira vez, as Strings "Clicked", "Clicked again" e "Clicked again" serão impressas no console.* Portanto, *o resultado final no console ao acionar o botão 3 vezes será "Clicked", "Clicked", "Clicked again", "Clicked", "Clicked again" e "Clicked again*, que *é a resposta indicada pela alternativa a.*
+
+* Questão 3  – Dadas as seguintes declarações de tipo e referência, qual instrução é legal?
+#+BEGIN_SRC java
+// Declarações de tipo:
+interface I1 {}
+interface I2 {}
+class C1 implements I1 {}
+class C2 implements I2 {}
+class C3 extends C1 implements I2 {}
+
+// Declarações de referência:
+C1 obj1;
+C2 obj2;
+C3 obj3;
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. obj2 = obj1;
+b. obj3 = obj2;
+c. I1 b = obj3;
+d. I1 a = obj2;
+e. obj3 = obj1;
+
+** Resposta:
+A partir das declarações de tipo acima e as suas relações de herança, podemos deduzir que *referências do tipo I1 só podem receber objetos dos tipos C1 (que implementa a interface I1) e C3 (que extende C1, portanto implementa I1 também) e referências do tipo I2 só podem receber objetos do tipo C2 e C3 (ambas classes que implementam a interface I2)*. *Como C3 extende C1, referências do tipo C1 também podem receber objetos do tipo C3*. Com base nestas informações, podemos avaliar as alternativas uma a uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Ilegal, pois referências do tipo C2 (obj2) não podem receber objetos do tipo C1 (obj1), pois não há nenhuma relação de herança entre estas classes;
+b. Ilegal, pois referências do tipo C3 (obj3) não podem receber objetos do tipo C2 (obj2), pois não há nenhuma relação de herança entre estas classes;
+c. Legal, pois C3 extende C1, que por sua vez implementa I1, logo C3 implementa I1 também;
+d. Ilegal, pois referências do tipo I1 (a) só podem receber objetos dos tipos C1 (obj1) e C3 (obj3) que implementam esta interface. Como C2 (obj2) não implementa I1, esta instrução é ilegal;
+e. Ilegal, pois C3 (obj3) é uma subclasse de C1 (obj1), e uma referência de uma subclase não pode receber um objeto do tipo de sua superclasse diretamente, é necessário fazer um *cast* (conversão de tipos) para que isto seja legal. Portanto, como não há um cast na instrução, ela é ilegal;
+
+Portanto, a *instrução legal é I1 b = obj3;*, assim *a alternativa correta é a c.*
+
+* Questão 4 – Qual das afirmações abaixo não é verdadeira?
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Maximizar a coesão e minimizar acoplamento são as características de um aplicativo bem desenvolvido.
+b. As dependências entre as classes podem ser minimizados escondendo detalhes da implementação.
+c. Se cada método implementar uma única tarefa, a classe resultante terá alta coesão.
+d. Acoplamento é uma propriedade inerente de todo o design orientado a objeto não trivial.
+e. Nenhuma das demais respostas.
+
+** Resposta:
+Analisando as afirmações acima:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Correta, baixo acoplamento e baixa coesão são boas práticas que melhoram a qualidade de um software. Princípios difundidos por Robert (Uncle Bob) Martin;
+b. Correta. A dependência entre as classes, também chamada de *acoplamento*, pode ser minimizado escondendo os detalhes da implementação e expondo apenas o necessário para a(s) outra() classe(s). Isso melhora a manutenibilidade do código, reduzindo acoplamentos (dependências) desnecessários que classes podem ter com detalhes da implementação de outras.
+c. Correta. Coesão se refere, justamente, a cada método realizar apenas uma única função, seguindo o princípio da responsabilidade única;
+d. Correta. Acomplamento nada mais é do que a dependência entre as classes do projeto. Portanto, em um projeto um pouco mais elaborado, o acoplamento torna-se algo que sempre estará presente, pois sempre teremos classes dependends umas das outras. O que deve ser feito é tentar reduzir ao máximo este acoplamento, expondo somente o que for necessário de cada classe.
+e. Como todas as outras alternativas estão corretas, então nenhuma está errada. Portanto *a resposta da questão é a alternativa e.*
+
+Portanto, *a alternativa correta é a e.*
+
+* Questão 5  – Considere as seguintes classes, declaradas separadamente em arquivos fonte:
+#+BEGIN_SRC java
+1. public class Base {
+2.   public void method(int i) {
+3.     System.out.print("Value is " + i);
+4.   }
+5. }
+1. public class Sub extends Base {
+2.   public void method(int j) {
+3.     System.out.print("This value is " + j);
+4.   }
+5.   public void method(String s) {
+6.     System.out.print("I was passed " + s);
+7.   }
+8.   public static void main(String args[]) {
+9.     Base b1 = new Base();
+10.     Base b2 = new Sub();
+11.     b1.method(5);
+12.     b2.method(6);
+13.   }
+14. }
+#+END_SRC
+
+Qual é a saída ao executar o método main da classe Sub?
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Value is 5This value is 6
+b. Value is 5Value is 6
+c. I was passed 5I was passed 6
+d. This value is 5Value is 6
+e. This value is 5This value is 6
+
+** Resposta:
+Ao executar o código acima, teremos como resultado as *frases Value is 5This value is 6 sendo impressas no console*. Portanto, *a alternativa correta é a a.* Isto ocorre porque *o objeto b1 é uma instância da classe Base (instanciado através do construtor padrão da classe) e o objeto b2 é uma instância da classe Sub*. Como *Sub extende de Base*, *ambas têm acesso aos métodos declarados e implementados na superclasse (Base)*. Acontece que, neste caso, *ambas as classes possuem uma implementação para o método mehtod() recebendo como parâmetro un valor inteiro* (Sub também possui um método method() cujo parâmetro é uma String, mas neste caso como o parâmetro é de um tipo diferente, os métodos são efetivamente diferentes), mas como *Sub extende Base, e elas tem métodos iguais, temos uma sobrecarga de métodos, ou seja, o método a ser chamado (mehtod() da Sub ou méthod() da Base) será decidido em /runtime/ de acordo com o objeto que chamar o método*. Ou seja, *uma instância de Base chamará o método method() da Base e uma instância de Sub chamará a versão sobrescrita do método method() presente em Sub*. Como 11 é uma instância de Base ela chamará o method() da Base (*que imprime Value is no console*) e b2, como instância de Sub, irá chamar o método method() da Sub (*que imprimirá This value is no console*), *resultando na resposta descrita na alternativa a.*
+
+* Questão 6  – Qual é o resultado do seguinte código?
+#+BEGIN_SRC java
+1.  public class Shape {
+2.     private String color;
+3.
+4.     public Shape(String color) {
+5.        System.out.print("Shape");
+6.        this.color = color;
+7.     }
+8.
+9.     public static void main(String [] args) {
+10.       new Rectangle();
+11.    }
+12. }
+13.
+14. class Rectangle extends Shape {
+15.    public Rectangle() {
+16.       System.out.print("Rectangle");
+17.    }
+18. }
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. ShapeRectangle
+b. Rectangle
+c. RectangleShape
+d. A linha 4 gera um erro de compilação.
+e. A linha 15 gera um erro de compilação.
+
+** Resposta:
+Tentar compilar e executar o código acima, *resultará em um erro de compilação na linha 15*. Portanto, *a resposta correta é a alternativa e.* Este erro de compilação ocorre porque o *construtor da classe Rectangle chama também o construtor da sua superclasse (Shape) implicitamente (já que não estamos especificando a chamada utilizando a instrução /super()/), mas como o construtor de Rectangle não possui parâmetro, nenhum parâmetro é passado para o contrutor de Shape, que precisa obrigatóriamente de um parâmetro do tipo String para que seu campo color seja preenchido. Com isso temos um erro de compilação neste contrutor*. Uma maneira de corrigir este problema é colocar a instrução /super()/ com uma String como parâmetro, assim ao chamar o contrutor de Rectangle, o construtor de sua superclasse será chamado passando a String passada dentro da instrução /super()/ como parâmetro.
+
+* Questão 7  – Dadas as seguintes definições de classe:
+#+BEGIN_SRC java
+1.  public class Parent {
+2.     public Parent() {
+3.        System.out.print("A");
+4.     }
+5.  }
+6.
+7.  class Child extends Parent {
+8.     public Child(int x) {
+9.        System.out.print("B");
+10.    }
+11.
+12.    public Child() {
+13.       this(123);
+14.       System.out.print("C");
+15.    }
+16. }
+#+END_SRC
+
+Qual é a saída da instrução  new Child(); ?
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. AC
+b. O código não compila.
+c. AB
+d. ABC
+e. ACB
+
+** Resposta:
+Ao chamar o construtor (instrução) /new Child()/ *teremos a String "ABC" sendo impressa no console*. Portanto, *a resposta correta é a alternativa d.* Isto ocorre porque, *ao chamar o contrutor /Child()/, como a classe Child é uma subclasse de Parent, chamamos também (implicitamente) o construtor da superclasse. Como a chamada do contrutor da superclasse é chamado antes de qualquer outra instrução, temos que a primeira String impressa no console será "A"* (devido à instrução presente no construtor da classe Parent). Em seguida, é executado as instruções dentro do construtor em questão (/Child()/). Portanto, a próxima instrução a ser executada será a instrução /this(123);/ que nada mais faz do que chamar o construtor equivalente ao tipo dos parâmetros passados. Neste caso, *o construtor da classe Child que recebe um int como parâmetro, executando assim as instruções no seu interior, ou seja, imprimindo a String "B" no console*. Finalmente, a última instrução presente no construtor /Child()/ é executada, *imprimindo a String "C" no console*.
+
+* Questão 8  – Qual é o resultado do seguinte código?
+#+BEGIN_SRC java
+1.  public class Beverage {
+2.     private int ounces = 12;
+3.     boolean carbonated = false;
+4.
+5.     public static void main(String [] args) {
+6.        System.out.println(new SodaPop());
+7.     }
+8.  }
+9.
+10. class SodaPop extends Beverage {
+11.    public String toString() {
+12.       return ounces + " " + carbonated;
+13.    }
+14. }
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. 12 false
+b. Erro de compilação na linha 10.
+c. Erro de compilação na linha 11.
+d. Erro de compilação na linha 6.
+e. Erro de compilação na linha 12.
+
+** Resposta:
+Tentar compilar e executar o código acima resultará em um *erro de compilação na linha 12*. Portanto, *a resposta correta é a alternativa e.* Este erro ocorre porque a *instrução na linha 12 tenta acessar a variável /ounces/,* mas *esta variável foi declarada como private na classe pai (superclasse), e este modificador de acesso só torna a variável visível dentro da própria classe*. Para resolver este problema, basta alterar o modificador de acesso da variável /ounces/, ou ainda melhor, utilizar um *Getter* para acessar o seu valor.
+
+* Questão 9  – Dadas as seguintes definições de classe:
+#+BEGIN_SRC java
+1.  public class Browser {
+2.     public static void main(String [] args) {
+3.        Browser b = new Firefox();
+4.        IE e = (IE) b;
+5.        e.go();
+6.     }
+7.
+8.     public void go() {
+9.        System.out.println("Inside Browser");
+10.    }
+11. }
+12.
+13. class Firefox extends Browser {
+14.    public void go() {
+15.       System.out.println("Inside Firefox");
+16.    }
+17. }
+18.
+19. class IE extends Browser {
+20.    public void go() {
+21.       System.out.println("Inside IE");
+22.    }
+23. }
+#+END_SRC
+
+qual é o resultado do seguinte código?
+#+BEGIN_SRC java
+4.  Browser ref = new IE();
+5.  if(ref instanceof Firefox) {
+6.     System.out.println("Firefox");
+7.  } else if(ref instanceof Browser) {
+8.            System.out.println("Browser");
+9.         } else if(ref instanceof IE) {
+10.                  System.out.println("IE");
+11.               } else {
+12.                         System.out.println("None of the above");
+13.
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Firefox
+b. Browser
+c. IE
+d. O código não compila.
+e. Nenhuma das anteriores.
+
+** Resposta:
+Tentar compilar e executar o código acima *resultará em um erro de compilação*. Portanto, *a resposta correta é a alternativa d.* Este erro ocorre porque temos o método *main() dentro da classe Browser, e dentro do método main(), na linha 4, temos uma conversão (cast) de um objeto do tipo Firefox (b) sendo atribuído a uma referência do tipo IE (e)*. *Mesmo com a conversão explicita sendo feita, esta conversão acaba sendo ilegal, visto que, mesmo ambas tendo a mesma superclasse, não há uma relação entre Firefox e IE diretamente. Assim, temos um erro de compilação ao compilar e executar o código;
+
+* Questão 10  – Dado o seguinte código:
+#+BEGIN_SRC java
+1.  interface Syrupable {
+2.     void getSugary();
+3.  }
+4.  abstract class Pancake implements Syrupable { }
+5.
+6.  class BlueBerryPancake implements Pancake {
+7.     public void getSugary() { ; }
+8.  }
+9.  class SourdoughBlueBerryPancake extends BlueBerryPancake {
+10.    void getSugary(int s) { ; }
+11. }
+#+END_SRC
+
+Assinale a afirmativa verdadeira.
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Erro de compilação na linha 6.
+b. Erro de compilação na linha 9.
+c. Não há erro de compilação.
+d. Erro de compilação na linha 2.
+e. Erro de compilação na linha 10.
+
+** Resposta:
+Tentar compilar e executar o código acima (considerando a existência de um método *main()* válido) *resultará em um erro de compilação na linha 6*. Portanto, *a resposta correta é a alternativa a.* Este erro ocorre porque na linha 6, a *classe BlueBerryPancake está tentando implementar (implements) a classe abstrata Pancake, que, por ser uma classe, não pode ser implementada, apenas extendida.
+
+* Questão 11  – Dadas as seguintes classes em arquivos distintos:
+#+BEGIN_SRC java
+interface Interface {
+}
+public class Teste implements Interface {
+    static String s;
+    public static void main(String args[]) {
+        Teste t = new Teste();
+        if(t instanceof Interface) {
+            System.out.print("Sou uma interface real. ");
+        } else {
+            System.out.print("Sou uma falsa interface. ");
+        }
+        if(s instanceof String) {
+            System.out.print("Sou uma string real. ");
+        } else {
+            System.out.print("Sou uma string falsa. ");
+        }
+    }
+}
+#+END_SRC
+Qual será o resultado da compilação e execução do método main da classe Teste?
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Erro de compilação.
+b. Sou uma falsa interface. Sou uma string falsa.
+c. Sou uma falsa interface. Sou uma string real.
+d. Sou uma interface real. Sou uma string falsa.
+e. Sou uma interface real. Sou uma string real.
+
+** Resposta:
+Tentar compilar e executar o código acima *resulta nas sentenças "Sou uma interface real." e "Sou uma string falsa." serem impressas no console*. Portanto, *a resposta correta é a alternativa d.* Isto ocorre porque ao utilizar instrução *instanceof* em um *objeto null resulta em um boolean false* (lembrando que o valor padrão de inicialização de Objetos é *null*), fazendo com que a sentença "Sou uma string falsa" seja impressa e ao utilizar o *instanceof em um objeto instanciado cuja classe implementa uma interface, resulta em um boolean true*, visto que o objeto é uma instância de uma classe que implementa a interface.
+
+* Questão 12  – Considerando que FileNotFoundException é subclasse de IOException, e o seguinte código:
+#+BEGIN_SRC java
+2.  import java.io.*;
+3.  public class MacPro extends Laptop {
+4.     public static void main(String[] args) {
+5.        new MacPro().crunch();
+6.     }
+7.     // insert code here
+8.  }
+9.  class Laptop {
+10.    void crunch() throws IOException { }
+11. }
+#+END_SRC
+Que método, inserido independentemente na linha 7, permite compilação?
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. void crunch() throws Exception { }
+b. void crunch(int x) throws Exception { }
+c. void crunch() throws RuntimeException { }
+d. void crunch() throws FileNotFoundException { }
+e. Nenhuma das anteriores.
+
+** Resposta:
+Para que a compilação seja possível dadas as alternativas, é necessário utilizar uma implementação do método *crunch()* que lance uma exceção compatível com a já lançada na implementação do mesmo método pertencente à classe Laptop. Neste caso, como não temos nenhuma exceção declarada ou tratada dentro de um bloco *try-catch* (exceção *checada*), precisamos selecionar uma exceção que seja não-checada, isto é cujo tratamento não seja obrigatório. A *única opção compatível neste caso é a exceção do tipo RuntimeException, que não é checada*. Portanto, *a resposta correta é a alternativa c.* 
+
+* Questão 13  – Dado o código abaixo:
+#+BEGIN_SRC java
+2.  import java.io.*;
+3.  interface Risky {
+4.     String doStuff() throws Exception;
+5.     Risky doCrazy();
+6.     void doInsane();
+7.  }
+8.  class Bungee implements Risky {
+9.     public String doStuff() throws IOException {
+10.       throw new IOException();
+11.    }
+12.    public Bungee doCrazy() { return new Bungee(); }
+13.    public void doInsane() throws NullPointerException {
+14.       throw new NullPointerException();
+15.    }
+16. }
+#+END_SRC
+
+Qual é o resultado?
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. O método Bungee.doCrazy() não compila.
+b. O método Bungee.doInsane() não compila.
+c. O método Bungee.doStuff() não compila.
+d. A interface Risky não compila.
+e. A compilação ocorre sem erro.
+
+** Resposta:
+Ao tentar compilar o trecho de código acima (considerando que existe uma classe pública com um método *main()* válido no mesmo projeto), temos que a *compilação ocorre sem problemas*. Portanto, *a resposta correta é a alternativa e.* Tudo compila perfeitamente devido ao fato da *classe que implementa a interface Risky (Bungee) implementa também todos os seus métodos* (o que é obrigatório ao implementar) corretamente e o método *doStuff()* está lançando uma exceção subclasse da exceção prevista na interface.
+
+* Questão 14  – Considerando que IllegalArgumentException é subclasse de RuntimeException, e o código abaixo:
+#+BEGIN_SRC java
+11. static String s = "";
+12. public static void main(String[] args) {
+13.    try { doStuff(); }
+14.    catch (Exception ex) { s += "c1 "; }
+15.    System.out.println(s);
+16. }
+17. static void doStuff() throws RuntimeException {
+18. try {
+19.    s += "t1 ";
+20.    throw new IllegalArgumentException();
+21. }
+22. catch (IllegalArgumentException ie) { s += "c2 "; }
+23. throw new IllegalArgumentException();
+24. }
+#+END_SRC
+Qual é o resultado?
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. t1 c1 c2
+b. Erro de compilação.
+c. t1 c2 c1
+d. c1 t1 c2
+e. c2 t1 c1
+
+** Resposta:
+Tentar compilar e executar o trecho de código acima (considerando que ele está dentro de uma classe válida, afinal o trecho de código acima começa na linha 11) *resultará na String "t1 c2 c1 " sendo impressa no console*. Portanto, *a resposta correta é a alternativa c.* Isto ocorre porque dentro do método *main()* temos um bloco *try-catch*, neste bloco, nós tentamos executar o método *doStuff()* (bloco de código dentro do bloco *try*), e caso ele lance uma exceção (qualquer pois estamos tratando uma exceção do tipo *Exception*), será concatenado à String s a String "c1 ". Dentro do método *doStuff()* temos mais um bloco *try-catch* que irá *concatenar à String s a String "t1 " (linha 19)* e, como s *é uma String vazia neste ponto, "t1 " será a primeira String adicionada a s.* Em seguida, na linha 20, é lançada uma exceção do tipo *IllegalArgumentException* que é capturada no *catch* da linha 22. No bloco deste *catch* temos que *a String "c2 " é concatenada a s*, e como s já possuia o valor "t1 " se tornará agora "t1 c1 ". em seguida, na linha 23 i método *doStuff()* *lança mais uma exceção (do tipo IllegalArgumentException) que é capturada no catch da linha 14* (afinal o método que estava dentro do try lançou uma exceção), que captura qualquer tipo de exceção. *Dentro deste bloco catch, concatenamos o valor "c1 " a s* como desrito acima, resultando na String s possuir o valor "t1 c2 c1 ", que é impresso logo em seguida. Como todas as exceções lançadas estão sendo tratadas o código executa corretamente.
+
+* Questão 15  – Dado o seguinte código:
+#+BEGIN_SRC java
+2.  class Dog {
+3.     void makeNoise() { System.out.print("bark "); }
+4.     static void play() { System.out.print("catching "); }
+5.  }
+6.  class Bloodhound extends Dog {
+7.     void makeNoise() { System.out.print("howl "); }
+8.     public static void main(String[] args) {
+9.        new Bloodhound().go();
+10.       super.play();
+11.       super.makeNoise();
+12.    }
+13.    void go() {
+14.       super.play();
+15.       makeNoise();
+16.       super.makeNoise();
+17.    }
+18. }
+#+END_SRC
+Qual é o resultado?
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Compilação falha devido a um erro na linha 10.
+b. catching howl howl catching howl
+c. catching howl bark catching bark
+d. catching howl bark, seguido de uma exceção.
+e. Compilação falha devido a um erro na linha 14.
+
+** Resposta:
+Tentar compilar e executar o código acima *resultará em um erro de compilação na linha 10*. Portanto, *a resposta correta é a alternativa a.* Este erro ocorre porque na linha 10, o programa tenta chamar o método *estático* *play()* da classe *Dog* *fora de um contexto estático* (utilizando *super()*), algo que não é aceito pelo compilador, afinal métodos estáticos devem ser chamados de manneira estática (*Dog.play()* neste caso).
+
+* Questão 16  – Dado o seguinte código:
+#+BEGIN_SRC java
+1.  class Contact {
+2.     String doStuff() { return "howdy "; }
+3.  }
+4.  class Supplier extends Contact {
+5.     String doStuff() { return "send money "; }
+6.     public static void main(String[] args) {
+7.     Supplier s1 = new Supplier();
+8.     Contact c3 = new Contact();
+9.     Contact c1 = s1;
+10.    Supplier s2 = (Supplier) c1;
+11.    Supplier s3 = (Supplier) c3;
+12.    Supplier s4 = new Contact();
+13. } }
+#+END_SRC
+Assinale a afirmação verdadeira.
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. A compilação é bem-sucedida.
+b. O código é executado sem lançamento de exceção.
+c. Se a(s) linhas de código que NÃO compilam (se existir alguma) for(em) removida(s), o 
+código é executado sem lançamento de exceção.
+d. Se a(s) linhas de código que NÃO compilam (se existir alguma) for(em) removida(s), o 
+código lança uma exceção em tempo de execução.
+e. Nenhuma das anteriores.
+
+** Resposta:
+Tentar compilar e executar o código acima *resulta em um erro de compilação na linha 12* devido à *referência do tipo Supplier (subclasse) estar recebendo um objeto do tipo de sua superclasse*, Contact (o que não é permitido sem um cast). Assim a eliminamos as alternativas a. e b.. Removendo (ou comentando) a linha 12, que gera o erro de compilação, o código é executado, porém lança uma exceção do tipo ClassCastException em tempo de execução. Esta exceção ocorre porque o programa não consege executar a conversão de tipo Contact para Supplier na linha 11. Como estamos descendo na hierarquica (indo da generalização para o caso mais específico), é um erro que pode acontecer. Portanto, *a resposta correta é a alternativa d.*
+
+* Questão 17  – A sua empresa faz software de renderização 3D para a indústria do cinema.
+Seu cientista-chefe acaba de descobrir um novo algoritmo para vários métodos-chave de
+uma classe utilitária comumente usada. O novo algoritmo diminuirá o tempo de
+processamento em 15 por cento, sem ter que alterar quaisquer assinaturas de métodos.
+Depois de alterar esses métodos-chave, e durante teste rigoroso do sistema, você descobre
+que as alterações não introduziram novos bugs no software.
+
+Em termos de design global do seu software, o que pode ser afirmado?
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Seu software demonstrou baixa coesão.
+b. Seu software demonstrou alta coesão.
+c. Seu software demonstrou acoplamento fraco.
+d. Seu software demonstrou acoplamento forte.
+e. Nenhuma das anteriores.
+
+** Resposta:
+De acordo com o texto apresentado, como não foi necessário realizar nenhuma alteração de assinatura de métodos, significa que não foi preciso realizar alterações em outras classes e visto que esta classe utilitária é comumente usada, significa que os detalhes de implementação da classe utilitária não estão expostos, ou seja, neste caso, *o software demonstrou acoplamento fraco*. Portanto, *a resposta correta é a alternativa c.*
+
+* Questão 18  – Dado o seguinte código:
+#+BEGIN_SRC java
+1.  import java.util.*;
+2.  class Radio {
+3.     String getFreq() { return "97.3"; }
+4.     static String getF() { return "97.3"; }
+5.  }
+6.  class Ham extends Radio {
+7.     String getFreq() { return "50.1"; }
+8.     static String getF() { return "50.1"; }
+9.     public static void main(String[] args) {
+10.       List<Radio> radios = new ArrayList<Radio>();
+11.       radios.add(new Radio());
+12.       radios.add(new Ham());
+13.       for(Radio r: radios)
+14.          System.out.print(r.getFreq() + " " + r.getF() + " ");
+15.    } }
+#+END_SRC
+
+Qual é o resultado?
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. 50.1 97.3 50.1 97.3
+b. Erro de compilação.
+c. 97.3 50.1 50.1 50.1
+d. 97.3 97.3 50.1 50.1
+e. 97.3 97.3 50.1 97.3
+
+** Resposta:
+Tentar compilar e executar o código acima temos *a String "97.3 97.3 50.1 97.3" impressa no console*. Portanto, *a alternativa correta é a e.* Isso ocorre porque temos dois objetos acidionales à lista radios, o primeiro uma instância de Radio e o segundo uma instância de Ham. Ao *acessar o método getFreq() do objeto do tipo Radio ele irá chamar a implementação presente na Classe Radio, portanto "97.3" será impresso no console*. O *mesmo ocorre para o método getF(), que também imprimirá "97.3" no console.* Ao *acessar o método getFreq() do objeto do tipo Ham, ele irá chamar o método definido na classe Ham, assim o valor impresso será "50.1", quanto ao método getF(), como ele é estático, não pode ser sobrescrito, portanto, mesmo sendo uma instância de Ham, o método chamado será o método da superclasse (Radio), assim o valor impresso na tela será "97.1"*.
+
+* Questão 19  – Dado o código-fonte abaixo, qual é o resultado esperado?
+#+BEGIN_SRC java
+public class Teste
+{
+    public static void main(String args[]) {
+        try {
+            String arr[] = new String[10];
+            arr = null;
+            arr[0] = "one";
+            System.out.print(arr[0]);
+        } catch(NullPointerException nex) {
+            System.out.print("null pointer exception");
+        } catch(Exception ex) {
+            System.out.print("exception");
+        }
+    }
+}
+#+END_SRC
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Nenhuma das demais respostas.
+b. Imprime: exception
+c. Imprime: null pointer exception
+d. Imprime: one
+e. Erro de compilação.
+
+** Resposta:
+Tentar compilar e executar o código acima *resultará na String "null pointer exception" sendo impressa no console*. Portanto, *a resposta correta é a alternativa c.* Isto ocorre porque estamos tentando acessar um elemento de um array que previamente recebeu um valor null. Ao tentar fazer isso, temos um *NullPointerExceptio* sendo lançado. Este erro é capturado no primeiro *catch*, que trata justamente exceções do tipo NullPointerException. Assim a frase "null pointer exception" é impressa no console (instrução presente no bloco do catch que está tratando a exceção).
+
+* Questão 20  – O que pode acessar diretamente e alterar o valor da variável roomNr?
+#+BEGIN_SRC java
+package com.mycompany;
+public class Hotel {
+private int roomNr = 100;
+}
+#+END_SRC
+
+Escolha uma:
+#+ATTR_LATEX: :options [label=\alph*.]
+a. Apenas a classe Hotel
+b. Qualquer classe no pacote com.mycompany
+c. Nenhuma das demais respostas.
+d. Qualquer classe
+e. Qualquer subclasse de Hotel
+
+** Resposta:
+Como a variável *roomNr* foi declarada com o modificador de acesso *private*, ela só pode ser *acessada dentro da própria classe* (sem métodos getter e setter). Portanto, *a resposta correta é a alternativa a.*
+
+* Gabarito
+#+ATTR_LATEX: :align |l|p{10cm}|
+|-----------+------------|
+| *Questão* | *Resposta* |
+|-----------+------------|
+|         1 | c.         |
+|-----------+------------|
+|         2 | a.         |
+|-----------+------------|
+|         3 | c.         |
+|-----------+------------|
+|         4 | e.         |
+|-----------+------------|
+|         5 | a.         |
+|-----------+------------|
+|         6 | e.         |
+|-----------+------------|
+|         7 | d.         |
+|-----------+------------|
+|         8 | e.         |
+|-----------+------------|
+|         9 | d.         |
+|-----------+------------|
+|        10 | a.         |
+|-----------+------------|
+|        11 | d.         |
+|-----------+------------|
+|        12 | c.         |
+|-----------+------------|
+|        13 | e.         |
+|-----------+------------|
+|        14 | c.         |
+|-----------+------------|
+|        15 | a.         |
+|-----------+------------|
+|        16 | d.         |
+|-----------+------------|
+|        17 | c.         |
+|-----------+------------|
+|        18 | e.         |
+|-----------+------------|
+|        19 | c.         |
+|-----------+------------|
+|        20 | a.         |
+|-----------+------------|
